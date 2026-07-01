@@ -1,0 +1,7 @@
+com\abheeth\mlops\model\MLWorkspace.class
+com\abheeth\mlops\model\EvaluationMetric.class
+com\abheeth\mlops\resource\DiscoveryResource.class
+com\abheeth\mlops\store\DataStore.class
+com\abheeth\mlops\config\ApiApplication.class
+com\abheeth\mlops\model\MachineLearningModel.class
+com\abheeth\mlops\Main.class

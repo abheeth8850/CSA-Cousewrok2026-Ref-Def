@@ -1,0 +1,449 @@
+{
+    "info": {
+        "name": "MLOps API",
+        "description": "Postman collection for the MLOps REST API coursework.\n\nRun requests in order to build on previously created resources.\n\nStart the server first, then run the collection from top to bottom.\n\nBase URL: http://localhost:8080/api/v1",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080/api/v1",
+            "type": "string"
+        },
+        {
+            "key": "workspaceId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "modelId",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Discovery",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Response has service name', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.service).to.eql('MLOps API');",
+                            "});",
+                            "",
+                            "pm.test('Response has contact details', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.contact).to.be.an('object');",
+                            "    pm.expect(json.contact.email).to.exist;",
+                            "});",
+                            "",
+                            "pm.test('Response has resource links', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.resources).to.be.an('object');",
+                            "    pm.expect(json.resources.workspaces).to.eql('/workspaces');",
+                            "    pm.expect(json.resources.models).to.eql('/models');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/",
+                    "host": ["{{base_url}}"],
+                    "path": [""]
+                }
+            }
+        },
+        {
+            "name": "Create Workspace",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 201', function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "pm.test('Response has an id', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.id).to.exist;",
+                            "});",
+                            "",
+                            "var jsonData = pm.response.json();",
+                            "pm.collectionVariables.set('workspaceId', jsonData.id);",
+                            "",
+                            "pm.test('workspaceId saved to collection variables', function () {",
+                            "    var savedId = pm.collectionVariables.get('workspaceId');",
+                            "    pm.expect(savedId).to.eql(jsonData.id);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"teamName\": \"Research Team Alpha\",\n    \"storageQuotaGb\": 100\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/workspaces",
+                    "host": ["{{base_url}}"],
+                    "path": ["workspaces"]
+                }
+            }
+        },
+        {
+            "name": "Get All Workspaces",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Response is an array', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json).to.be.an('array');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/workspaces",
+                    "host": ["{{base_url}}"],
+                    "path": ["workspaces"]
+                }
+            }
+        },
+        {
+            "name": "Get Workspace By ID",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Workspace ID matches requested', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.id).to.eql(pm.collectionVariables.get('workspaceId'));",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/workspaces/{{workspaceId}}",
+                    "host": ["{{base_url}}"],
+                    "path": ["workspaces", "{{workspaceId}}"]
+                }
+            }
+        },
+        {
+            "name": "Create Model",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 201', function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "pm.test('Response has an id', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.id).to.exist;",
+                            "});",
+                            "",
+                            "var jsonData = pm.response.json();",
+                            "pm.collectionVariables.set('modelId', jsonData.id);",
+                            "",
+                            "pm.test('modelId saved to collection variables', function () {",
+                            "    var savedId = pm.collectionVariables.get('modelId');",
+                            "    pm.expect(savedId).to.eql(jsonData.id);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"framework\": \"TensorFlow\",\n    \"status\": \"TRAINING\",\n    \"workspaceId\": \"{{workspaceId}}\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/models",
+                    "host": ["{{base_url}}"],
+                    "path": ["models"]
+                }
+            }
+        },
+        {
+            "name": "Get All Models",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Response is an array', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json).to.be.an('array');",
+                            "});",
+                            "",
+                            "pm.test('Created model appears in list', function () {",
+                            "    var json = pm.response.json();",
+                            "    var modelIds = json.map(function(m) { return m.id; });",
+                            "    pm.expect(modelIds).to.include(pm.collectionVariables.get('modelId'));",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/models",
+                    "host": ["{{base_url}}"],
+                    "path": ["models"]
+                }
+            }
+        },
+        {
+            "name": "Get Models By Status (TRAINING)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('All returned models have status TRAINING', function () {",
+                            "    var json = pm.response.json();",
+                            "    json.forEach(function(model) {",
+                            "        pm.expect(model.status).to.eql('TRAINING');",
+                            "    });",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/models?status=TRAINING",
+                    "host": ["{{base_url}}"],
+                    "path": ["models"],
+                    "query": [
+                        {
+                            "key": "status",
+                            "value": "TRAINING"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Add Metric",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 201', function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "pm.test('Metric has an id and timestamp', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.id).to.exist;",
+                            "    pm.expect(json.timestamp).to.be.a('number');",
+                            "});",
+                            "",
+                            "pm.test('Accuracy score matches request', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.accuracyScore).to.eql(0.95);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"accuracyScore\": 0.95\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/models/{{modelId}}/metrics",
+                    "host": ["{{base_url}}"],
+                    "path": ["models", "{{modelId}}", "metrics"]
+                }
+            }
+        },
+        {
+            "name": "Get Metrics For Model",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 200', function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test('Response is an array', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json).to.be.an('array');",
+                            "});",
+                            "",
+                            "pm.test('Added metric appears in list', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.length).to.be.at.least(1);",
+                            "    pm.expect(json[0].accuracyScore).to.eql(0.95);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/models/{{modelId}}/metrics",
+                    "host": ["{{base_url}}"],
+                    "path": ["models", "{{modelId}}", "metrics"]
+                }
+            }
+        },
+        {
+            "name": "Error: Delete Workspace With Models (expect 409)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 409 Conflict', function () {",
+                            "    pm.response.to.have.status(409);",
+                            "});",
+                            "",
+                            "pm.test('Error response has status and message', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.status).to.eql(409);",
+                            "    pm.expect(json.message).to.exist;",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/workspaces/{{workspaceId}}",
+                    "host": ["{{base_url}}"],
+                    "path": ["workspaces", "{{workspaceId}}"]
+                }
+            }
+        },
+        {
+            "name": "Error: Create Model Invalid Workspace (expect 422)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test('Status code is 422', function () {",
+                            "    pm.response.to.have.status(422);",
+                            "});",
+                            "",
+                            "pm.test('Error response has status and message', function () {",
+                            "    var json = pm.response.json();",
+                            "    pm.expect(json.status).to.eql(422);",
+                            "    pm.expect(json.message).to.exist;",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"framework\": \"PyTorch\",\n    \"status\": \"TRAINING\",\n    \"workspaceId\": \"non-existent-workspace-id\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/models",
+                    "host": ["{{base_url}}"],
+                    "path": ["models"]
+                }
+            }
+        }
+    ]
+}
